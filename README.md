@@ -1,59 +1,72 @@
-# Fintrack
+# FinTrack
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+A full-stack **personal finance & expense tracker** — track accounts, categorize
+transactions, and manage monthly budgets.
 
-## Development server
+Built as a showcase of modern **Angular 22** (standalone components, Signals,
+zoneless change detection) with a **Spring Boot + MySQL** REST backend and
+**JWT** authentication.
 
-To start a local development server, run:
+## Tech stack
 
-```bash
-ng serve
-```
+| Layer     | Technology                                                        |
+| --------- | ----------------------------------------------------------------- |
+| Frontend  | Angular 22 · standalone · zoneless · Signals · TypeScript 6       |
+| Testing   | Vitest · ESLint (@angular-eslint)                                 |
+| Backend   | Spring Boot (REST API) *(planned)*                                |
+| Database  | MySQL + JPA *(planned)*                                           |
+| Auth      | JWT *(planned)*                                                   |
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Domain
 
-## Code scaffolding
+`Account → Transaction → Category`, plus per-category monthly `Budget`s.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Features
 
-```bash
-ng generate component component-name
-```
+- **Dashboard** — balances, spending, and budget snapshots at a glance
+- **Transactions** — list, filter, and manage income/expenses
+- **Accounts** — bank, cash, and card accounts
+- **Budgets** — set and track monthly limits per category
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting started
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Requires **Node ≥ 24.15** (an `.nvmrc` is included):
 
 ```bash
-ng test
+nvm use            # picks up Node 24 from .nvmrc
+npm install
+npx ng serve       # dev server at http://localhost:4200
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Other useful commands:
 
 ```bash
-ng e2e
+npx ng build       # production build to dist/
+npx ng test        # run unit tests (Vitest)
+npx ng lint        # lint with ESLint
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Architecture
 
-## Additional Resources
+```
+src/app/
+  core/       singletons: services, models, guards, interceptors
+  features/   dashboard, transactions, accounts, budgets (lazy-loaded)
+  shared/     reusable components, pipes, directives
+  layout/     app shell (MainLayout: sidebar + nav)
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Feature routes are **lazy-loaded** via `loadComponent`, so each ships in its
+own bundle and downloads only on navigation.
+
+## Roadmap
+
+- [x] **Phase 0** — Foundation: scaffold, app shell, routing, lazy loading
+- [ ] **Phase 1** — Mock API + data layer
+- [ ] **Phase 2** — Core UI (list / detail / forms)
+- [ ] **Phase 3** — Routing, guards, lazy loading
+- [ ] **Phase 4** — Dashboard & data visualization
+- [ ] **Phase 5** — Cross-cutting concerns (interceptors, directives, pipes)
+- [ ] **Phase 6** — Spring Boot backend
+- [ ] **Phase 7** — MySQL + JPA
+- [ ] **Phase 8** — Auth (JWT), testing, deployment
