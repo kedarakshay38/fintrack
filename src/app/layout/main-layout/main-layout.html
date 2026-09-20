@@ -1,0 +1,29 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__logo">💰</span>
+      <span class="brand__name">FinTrack</span>
+    </div>
+
+    <nav class="nav">
+      @for (link of navLinks; track link.path) {
+        <a
+          class="nav__item"
+          [routerLink]="link.path"
+          routerLinkActive="nav__item--active"
+        >
+          <span class="nav__icon">{{ link.icon }}</span>
+          <span class="nav__label">{{ link.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <small>Angular 22 · Zoneless · Signals</small>
+    </div>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

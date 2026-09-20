@@ -1,0 +1,40 @@
+.page-head {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.75rem;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+
+  &__label {
+    color: #64748b;
+    font-size: 0.85rem;
+  }
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
