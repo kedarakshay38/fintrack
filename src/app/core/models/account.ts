@@ -1,0 +1,13 @@
+
+export type AccountType ='checking'| 'savings'|'cash' | 'credit'
+
+
+
+export interface Account {
+    id:string,
+    name:string,
+    type:AccountType,
+    balance:number,
+    currency:string
+
+}
