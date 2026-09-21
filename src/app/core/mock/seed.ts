@@ -33,3 +33,4 @@ export const BUDGETS = [
   { id: 'b2', categoryId: 'c4', limit: 1200, period: '2026-09', spent: 1200 },
   { id: 'b3', categoryId: 'c5', limit: 200, period: '2026-09', spent: 70.9 },
 ] satisfies Budget[];
+
