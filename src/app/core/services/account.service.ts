@@ -13,4 +13,11 @@ export class AccountService{
     readonly accounts =this.#accounts.asReadonly();//public readable
 
     readonly totalBalance= computed(()=>this.#accounts().reduce((sum,acc)=>sum+acc.balance,0));
+
+    // O(1) id -> account lookup, rebuilt only when #accounts changes.
+    readonly #byId= computed(()=> new Map(this.#accounts().map((a)=>[a.id,a])));
+
+    accountName(id:string):string{
+        return this.#byId().get(id)?.name ?? id;
+    }
 }
