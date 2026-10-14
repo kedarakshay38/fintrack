@@ -5,7 +5,7 @@ import { newId } from '../util/id';
 
 // Signal-based store for categories, seeded from mock data.
 @Injectable({ providedIn: 'root' })
-export class CategoryService {
+export class CategoryServices {
   #categories = signal<Category[]>([...CATEGORIES]);
 
   readonly categories = this.#categories.asReadonly();
@@ -18,8 +18,17 @@ export class CategoryService {
     this.#categories().filter((c) => c.kind === 'expense'),
   );
 
+  // O(1) id -> category lookup, rebuilt only when #categories changes.
+  readonly #byId = computed(
+    () => new Map(this.#categories().map((c) => [c.id, c])),
+  );
+
+  categoryName(id: string): string {
+    return this.#byId().get(id)?.name ?? id;
+  }
+
   getById(id: string): Category | undefined {
-    return this.#categories().find((c) => c.id === id);
+    return this.#byId().get(id);
   }
 
   add(category: Omit<Category, 'id'>): Category {

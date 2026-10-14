@@ -15,8 +15,17 @@ export class AccountService {
     this.#accounts().reduce((sum, acc) => sum + acc.balance, 0),
   );
 
+  // O(1) id -> account lookup, rebuilt only when #accounts changes.
+  readonly #byId = computed(
+    () => new Map(this.#accounts().map((a) => [a.id, a])),
+  );
+
+  accountName(id: string): string {
+    return this.#byId().get(id)?.name ?? id;
+  }
+
   getById(id: string): Account | undefined {
-    return this.#accounts().find((acc) => acc.id === id);
+    return this.#byId().get(id);
   }
 
   add(account: Omit<Account, 'id'>): Account {
