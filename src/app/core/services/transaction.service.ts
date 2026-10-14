@@ -1,33 +1,24 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { Transaction } from '../models/transaction';
-import { TRANSACTIONS } from '../mock/seed';
-import { newId } from '../util/id';
+import { computed, Injectable, signal } from "@angular/core";
+import { Transaction } from "../models/transaction";
+import { TRANSACTIONS } from "../mock/seed";
 
-// Signal-based store for transactions, seeded from mock data.
-@Injectable({ providedIn: 'root' })
-export class TransactionService {
-  #transactions = signal<Transaction[]>([...TRANSACTIONS]);
+@Injectable(
+    {providedIn:'root'}
+)
+export class TransactionService{
 
-  readonly transactions = this.#transactions.asReadonly();
-  readonly count = computed(() => this.#transactions().length);
+    //private readonly signal seeded with transactions
+    #transactions = signal<Transaction[]>(TRANSACTIONS);
 
-  getById(id: string): Transaction | undefined {
-    return this.#transactions().find((tx) => tx.id === id);
-  }
+    //public readonly signal
+    readonly transactions= this.#transactions.asReadonly();
 
-  add(tx: Omit<Transaction, 'id'>): Transaction {
-    const created: Transaction = { ...tx, id: newId() };
-    this.#transactions.update((list) => [...list, created]);
-    return created;
-  }
+    readonly count =computed(()=>this.#transactions().length);
 
-  update(id: string, changes: Partial<Omit<Transaction, 'id'>>): void {
-    this.#transactions.update((list) =>
-      list.map((tx) => (tx.id === id ? { ...tx, ...changes } : tx)),
-    );
-  }
+    add(tx:Transaction){
+this.#transactions.update(list=>[...list,tx]);
+    }
 
-  remove(id: string): void {
-    this.#transactions.update((list) => list.filter((tx) => tx.id !== id));
-  }
+
+
 }
