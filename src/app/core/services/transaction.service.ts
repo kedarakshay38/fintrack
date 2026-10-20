@@ -15,6 +15,17 @@ export class TransactionService{
 
     readonly count =computed(()=>this.#transactions().length);
 
+   readonly filterType =signal<'all'|'income'|'expense'>("all");
+  readonly filteredTransactions=computed(()=> this.#transactions().filter((t)=>{
+     const f = this.filterType();
+  return f === 'all'
+    ? this.#transactions():
+    t.type===this.filterType()
+
+  }));
+
+  
+
     add(tx:Transaction){
 this.#transactions.update(list=>[...list,tx]);
     }
