@@ -1,23 +1,20 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Budget } from '../models/budget';
 import { BUDGETS } from '../mock/seed';
+import { newId } from '../util/id';
 import { TransactionService } from './transaction.service';
 
+// Signal-based store for budgets; `spent` is derived from transactions.
 @Injectable({ providedIn: 'root' })
 export class BudgetService {
-  // One service can inject another. Budgets depend on transactions
-  // (one-way) — keep the direction consistent to avoid circular deps.
   private readonly txService = inject(TransactionService);
 
-  // Private writable state + public read-only view (single-writer pattern).
-  #budgets = signal<Budget[]>(BUDGETS);
+  #budgets = signal<Budget[]>([...BUDGETS]);
   readonly budgets = this.#budgets.asReadonly();
+  readonly count = computed(() => this.#budgets().length);
 
-  /**
-   * Each budget with its `spent` DERIVED from transactions rather than stored.
-   * This computed reads TWO signals — transactions() and #budgets() — so it
-   * auto-recomputes whenever either changes. No manual subscriptions.
-   */
+  // Each budget with `spent` recomputed from matching expense transactions
+  // in its period, so it stays in sync whenever either signal changes.
   readonly budgetsWithSpent = computed(() => {
     const txns = this.txService.transactions();
 
@@ -31,8 +28,27 @@ export class BudgetService {
         )
         .reduce((sum, t) => sum + t.amount, 0);
 
-      // Override the seeded `spent` with the derived value (source of truth).
       return { ...b, spent };
     });
   });
+
+  getById(id: string): Budget | undefined {
+    return this.#budgets().find((b) => b.id === id);
+  }
+
+  add(budget: Omit<Budget, 'id'>): Budget {
+    const created: Budget = { ...budget, id: newId() };
+    this.#budgets.update((list) => [...list, created]);
+    return created;
+  }
+
+  update(id: string, changes: Partial<Omit<Budget, 'id'>>): void {
+    this.#budgets.update((list) =>
+      list.map((b) => (b.id === id ? { ...b, ...changes } : b)),
+    );
+  }
+
+  remove(id: string): void {
+    this.#budgets.update((list) => list.filter((b) => b.id !== id));
+  }
 }
