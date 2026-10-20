@@ -27,6 +27,37 @@
   </button>
 </div>
 
+<div class="toolbar">
+  <button class="btn-add" (click)="showForm.set(!showForm())">
+    {{ showForm() ? 'Cancel' : '+ Add Transaction' }}
+  </button>
+</div>
+
+@if (showForm()) {
+  <form class="tx-form" [formGroup]="form" (ngSubmit)="submit()">
+    <input type="date" formControlName="date" />
+    <input type="number" placeholder="Amount" formControlName="amount" />
+    <select formControlName="type">
+      <option value="expense">Expense</option>
+      <option value="income">Income</option>
+    </select>
+    <select formControlName="categoryId">
+      <option value="" disabled>Category</option>
+      @for (cat of categoryService.categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+    <select formControlName="accountId">
+      <option value="" disabled>Account</option>
+      @for (acc of accountService.accounts(); track acc.id) {
+        <option [value]="acc.id">{{ acc.name }}</option>
+      }
+    </select>
+    <input type="text" placeholder="Note (optional)" formControlName="note" />
+    <button type="submit" [disabled]="form.invalid">Add</button>
+  </form>
+}
+
 @if (txService.filteredTransactions().length) {
   <table class="tx-table">
     <thead>
