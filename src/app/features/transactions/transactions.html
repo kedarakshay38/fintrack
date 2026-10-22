@@ -28,12 +28,14 @@
 </div>
 
 <div class="toolbar">
-  <button class="btn-add" (click)="showForm.set(!showForm())">
-    {{ showForm() ? 'Cancel' : '+ Add Transaction' }}
-  </button>
+  @if (editingId() || showForm()) {
+    <button class="btn-add" (click)="cancel()">Cancel</button>
+  } @else {
+    <button class="btn-add" (click)="showForm.set(true)">+ Add Transaction</button>
+  }
 </div>
 
-@if (showForm()) {
+@if (editingId() || showForm()) {
   <form class="tx-form" [formGroup]="form" (ngSubmit)="submit()">
     <input type="date" formControlName="date" />
     <input type="number" placeholder="Amount" formControlName="amount" />
@@ -54,7 +56,7 @@
       }
     </select>
     <input type="text" placeholder="Note (optional)" formControlName="note" />
-    <button type="submit" [disabled]="form.invalid">Add</button>
+    <button type="submit" [disabled]="form.invalid">{{ editingId() ? 'Save' : 'Add' }}</button>
   </form>
 }
 
@@ -62,6 +64,7 @@
   <table class="tx-table">
     <thead>
       <tr>
+        <th>Action</th>
         <th>Date</th>
         <th>Category</th>
         <th>Account</th>
@@ -72,6 +75,9 @@
     <tbody>
       @for (tx of txService.filteredTransactions(); track tx.id) {
         <tr>
+            <td><button (click)="edit(tx)">Edit</button>
+  <button (click)="remove(tx.id)">Delete</button>
+  </td>
           <td>{{ tx.date | date: 'mediumDate' }}</td>
           <td>{{ categoryService.categoryName(tx.categoryId) }}</td>
           <td>{{ accountService.accountName(tx.accountId) }}</td>
